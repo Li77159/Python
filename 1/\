@@ -1,0 +1,63 @@
+import pygame
+from sprite import *
+
+
+class PlayGame(object):
+    def __init__(self):
+        self.screen      =  pygame.display.set_mode(SCREEN_RECT.size)
+        self.clock       =  pygame.time.Clock()
+        pygame.display.set_caption('飞机大战')
+        self.createSprite()
+        pygame.time.set_timer(CREATE_EVENT,1000)
+
+    def playgame(self):
+        while True:
+            self.clock.tick(60)
+            self.eventListener()
+            self.updateSprite()
+            pygame.display.update()
+
+
+    def startGame(self):
+        self.enemy       =  Enemy()
+        self.enemyGroup.add(self.enemy)
+
+    def createSprite(self):
+        bg1              =  BackGround('imagine/background.png')
+        bg2              =  BackGround('imagine/background.png')
+        self.start       =  Start('imagine/start.png')
+        # enemy            =  Enemy('imagine/enemy0.png')
+        bg2.rect.y       =  -bg1.rect.height
+        self.bgGroup     =  pygame.sprite.Group(bg1,bg2)
+        self.start1      =  pygame.sprite.Group(self.start)
+        self.enemyGroup  =  pygame.sprite.Group()
+
+    def updateSprite(self):
+        for group in [self.bgGroup,self.start1,self.enemyGroup]:
+            group.update()
+            group.draw(self.screen)
+
+    def eventListener(self):
+        key_pressed = pygame.key.get_pressed()
+        for event in pygame.event.get():
+            print(event)
+            if event.type == pygame.QUIT or key_pressed[27]:
+                self.gameOver()
+            elif event.type == CREATE_EVENT:
+                print('飞机')
+            elif key_pressed[13]:
+                print('123')
+                self.start1.remove(self.start)
+                self.updateSprite()
+                #self.startGame()
+
+                self.startGame()
+                self.updateSprite()
+
+    @staticmethod
+    def gameOver():
+        pygame.quit()
+        exit()
+if __name__ == '__main__':
+    game = PlayGame()
+    game.playgame()
